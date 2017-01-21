@@ -13,3 +13,6 @@ hs_err_pid*
 
 build/*
 dist/*
+/t03Tarea3Chat/nbproject/private/
+/t03Tarea3Chat/build/
+/t03Tarea3Chat/dist/
