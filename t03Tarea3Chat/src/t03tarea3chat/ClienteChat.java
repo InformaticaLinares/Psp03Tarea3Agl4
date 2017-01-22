@@ -20,13 +20,17 @@ import javax.swing.JTextArea;
  * @author pedro
  */
 public class ClienteChat extends javax.swing.JFrame {
-        ServerSocket servidor;
-        Socket cliente;
-        HiloDelServidor hilo; 
-       String host;
-        int puerto; //puerto de conexion
-        String cadena; //para texto que leo del teclado
-        String cadenaServer;
+
+    ServerSocket servidor;
+    Socket cliente;
+    HiloDelServidor hilo;
+    String host;
+    int puerto; //puerto de conexion
+    String cadena; //para texto que leo del teclado
+    String cadenaServer;
+    BufferedReader entrada;
+    PrintWriter salida;
+    BufferedReader teclado;
 
     public JTextArea getjTextArea1() {
         return jTextArea1;
@@ -35,7 +39,7 @@ public class ClienteChat extends javax.swing.JFrame {
     public void setjTextArea1(JTextArea jTextArea1) {
         this.jTextArea1 = jTextArea1;
     }
-       
+
     /**
      * Creates new form ServidorChat
      */
@@ -74,6 +78,11 @@ public class ClienteChat extends javax.swing.JFrame {
         });
 
         btnEnviar.setText("Enviar");
+        btnEnviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnviarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -113,11 +122,18 @@ public class ClienteChat extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
+        this.cadena = this.jTextField1.getText();
+        this.cadena = " Cliente x:" + this.cadena;
+       // this.jTextArea1.setText(this.cadena);
+        this.salida.println(this.cadena);
+    }//GEN-LAST:event_btnEnviarActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) throws IOException {
-        ClienteChat clientechat=new ClienteChat();
+        ClienteChat clientechat = new ClienteChat();
         clientechat.setVisible(true);
         clientechat.host = "localhost"; //host local
         clientechat.puerto = 55000; //puerto de conexion
@@ -126,34 +142,33 @@ public class ClienteChat extends javax.swing.JFrame {
         try {
             clientechat.cliente = new Socket(clientechat.host, clientechat.puerto); //socket en el puerto
             //flujos de entrada y salida al servidor
-            BufferedReader entrada = new BufferedReader(new InputStreamReader(
+            clientechat.entrada = new BufferedReader(new InputStreamReader(
                     clientechat.cliente.getInputStream()));
-            PrintWriter salida = new PrintWriter(clientechat.cliente.getOutputStream(), true);
+            clientechat.salida = new PrintWriter(clientechat.cliente.getOutputStream(), true);
             //Flujo para la entrada estandar
-            BufferedReader teclado = new BufferedReader(new InputStreamReader(
+            clientechat.teclado = new BufferedReader(new InputStreamReader(
                     System.in));
-            clientechat.jTextArea1.setText("Escribe un texto: ");
-            clientechat.cadena = teclado.readLine();
+            clientechat.jTextArea1.setText("Cliente entra al chat: ");
+            clientechat.cadena = clientechat.jTextField1.getText();
             while (true) {
-                salida.println(clientechat.cadena); //escribo en el flujo de salida
-                clientechat.cadenaServer = entrada.readLine(); //leeo del flujo de entrada 
+                clientechat.cadenaServer = clientechat.entrada.readLine(); //leo del flujo de entrada 
                 clientechat.jTextArea1.setText("El texto recibido del servidor es: " + clientechat.cadenaServer);
-                if ("*".equals(clientechat.cadena)) break;
-                clientechat.jTextField1.setText("Escribe un texto: ");
-                clientechat.cadena = teclado.readLine();                
+                if ("*".equals(clientechat.cadena)) {
+                    break;
+                }
+                clientechat.cadena = clientechat.jTextField1.getText();
             }
-            
+
 //cierro flujos y socket
-            entrada.close();
-            salida.close();
-            teclado.close();
+            clientechat.entrada.close();
+            clientechat.salida.close();
+            clientechat.teclado.close();
             clientechat.cliente.close();
         } catch (IOException ex) {
             Logger.getLogger(ClienteChat.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         /* Create and display the form */
-       
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

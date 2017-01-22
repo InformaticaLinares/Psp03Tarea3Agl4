@@ -123,9 +123,6 @@ public class ServidorChat extends javax.swing.JFrame {
             HiloDelServidor hilo = new HiloDelServidor (cliente);
             hilo.start();
         }
-        
-        /* Create and display the form */
-       
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
