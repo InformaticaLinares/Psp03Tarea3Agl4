@@ -119,7 +119,9 @@ public class ServidorChat extends javax.swing.JFrame {
         System.out.println ("Servidor preparado para trabajar");
         while (true){ //bucle infinito
             cliente = servidor.accept();
-            servidorchat.jTextArea1.setText(servidorchat.jTextArea1.getText()+" \nCliente conectado");
+            int contador=1;
+            servidorchat.jTextArea1.setText(servidorchat.jTextArea1.getText()+" \nCliente conectado nº "+contador);
+            contador ++;
             HiloDelServidor hilo = new HiloDelServidor (cliente);
             hilo.start();
         }
